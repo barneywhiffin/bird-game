@@ -1,11 +1,12 @@
-#%%
+#%% Preliminaries
 
 import os
+# from pathlib import Path
 import pygame
+pygame.mixer.init()
 import random
 
-
-#%%
+#%% Functions
 
 def print_commands():
     print("""
@@ -18,36 +19,52 @@ def print_commands():
         Enter 'q' to quit
     """)
 
+birds_tested = []
+
+def create_test_bird(birds):
+    test_bird = random.choice(birds)
+    birds_tested.append(test_bird)
+    return test_bird
+
 #%% Setup
 
-score = 0
-pygame.mixer.init()
-wrens = {}
-robins = {}
+# list of all birds which works adaptively (can add more birds to project)
+birds = [
+    folder for folder in os.listdir("audio")
+    if os.path.isdir(os.path.join("audio", folder))
+    and os.listdir(os.path.join("audio", folder)) # checks that the folder is not empty
+]
 
-for filename in os.listdir("audio/wren"):
-    if filename.endswith(".wav") or filename.endswith(".mp3"):
+print(birds)
+
+#%% Random Choice of Bird
+
+test_bird = create_test_bird(birds)
+print(test_bird)
+
+#%% make dictionary of everything in folder for that bird
+
+# possibly this can be massively simplified if we never care about which wav it was??
+
+test_bird_kvps = {}
+
+root_path = "audio/"
+path_string = root_path + test_bird
+
+for filename in os.listdir(path_string):
+    if filename.endswith(".wav"):
         name = os.path.splitext(filename)[0]
-        wrens[name] = pygame.mixer.Sound(
-            os.path.join("audio/wren", filename)
+        test_bird_kvps[name] = pygame.mixer.Sound(
+            os.path.join(path_string, filename)
         )
 
-for filename in os.listdir("audio/robin"):
-    if filename.endswith(".wav") or filename.endswith(".mp3"):
-        name = os.path.splitext(filename)[0]
-        robins[name] = pygame.mixer.Sound(
-            os.path.join("audio/robin", filename)
-        )
+print(test_bird_kvps)
 
-print(wrens.keys())
-print(robins.keys())
+#%% random choice of example of that bird
 
-# sounds['wren1'].play()
+test_bird_song = random.choice(list(test_bird_kvps.values()))
 
-wren, wren_song = random.choice(list(wrens.items()))
-
-print(wren)
-print(wren_song)
+print(test_bird_song)
 
 #%%
 
@@ -58,6 +75,7 @@ def main():
     print("Game starting")
     print_commands()
 
+    score = 0
     pygame.mixer.music.load('audio/wren1.wav')
 
     bird = 'wren'

@@ -3,8 +3,10 @@ name = "bird-game"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
+    "isort>=8.0.1",
     "playsound3>=3.3.1",
+    "pydub>=0.25.1",
     "pygame>=2.6.1",
 ]
