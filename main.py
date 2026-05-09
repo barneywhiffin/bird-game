@@ -1,6 +1,9 @@
 #%%
 
+import os
 import pygame
+import random
+
 
 #%%
 
@@ -15,16 +18,46 @@ def print_commands():
         Enter 'q' to quit
     """)
 
+#%% Setup
+
+score = 0
+pygame.mixer.init()
+wrens = {}
+robins = {}
+
+for filename in os.listdir("audio/wren"):
+    if filename.endswith(".wav") or filename.endswith(".mp3"):
+        name = os.path.splitext(filename)[0]
+        wrens[name] = pygame.mixer.Sound(
+            os.path.join("audio/wren", filename)
+        )
+
+for filename in os.listdir("audio/robin"):
+    if filename.endswith(".wav") or filename.endswith(".mp3"):
+        name = os.path.splitext(filename)[0]
+        robins[name] = pygame.mixer.Sound(
+            os.path.join("audio/robin", filename)
+        )
+
+print(wrens.keys())
+print(robins.keys())
+
+# sounds['wren1'].play()
+
+wren, wren_song = random.choice(list(wrens.items()))
+
+print(wren)
+print(wren_song)
+
+#%%
+
 def main():
 
     #%% User Interaction
 
-    score = 0
-
     print("Game starting")
     print_commands()
 
-    pygame.mixer.init()
     pygame.mixer.music.load('audio/wren1.wav')
 
     bird = 'wren'
