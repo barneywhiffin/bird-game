@@ -1,6 +1,6 @@
 #%%
 
-from playsound3 import playsound
+import pygame
 
 #%%
 
@@ -12,7 +12,9 @@ def main():
 
     score = 0
 
-    playsound('audio/wren1.wav')
+    pygame.mixer.init()
+    pygame.mixer.music.load('audio/wren1.wav')
+    pygame.mixer.music.play()
 
     bird = 'wren'
 
