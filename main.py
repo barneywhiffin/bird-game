@@ -1,10 +1,40 @@
 #%% Preliminaries
 
 import os
+import json
+from datetime import datetime
 # from pathlib import Path
 import pygame
 pygame.mixer.init()
 import random
+
+
+ #%%
+
+# need to sort username logic tooo
+new_score = {
+    "username": "barney",
+    "date": datetime.now().strftime("%Y-%m-%d"),
+    "time": datetime.now().strftime("%H:%M:%S"),
+    "score": 0
+}
+
+filename = "scores.json"
+
+# Load existing scores
+if os.path.exists(filename):
+    with open(filename, "r") as file:
+        scores = json.load(file)
+else:
+    scores = []
+
+# Add new score
+scores.append(new_score)
+
+# Save updated list
+with open(filename, "w") as file:
+    json.dump(scores, file, indent=4)
+
 
 #%% Setup
 
@@ -81,6 +111,11 @@ def main():
     print_commands(birds)
 
     score = 0
+
+    # add a simple json or smt which can hold all time highest scores!!
+
+    # and add a print at game over which compares guesses to correct answers
+    # actually would be better here to just make the game politer and tell you each round, and offer an immediately replay of sound
 
     while True:
 
