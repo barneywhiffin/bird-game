@@ -6,26 +6,6 @@ import pygame
 pygame.mixer.init()
 import random
 
-#%% Functions
-
-def print_commands():
-    print("""
-        Enter a bird name to make a guess
-          
-        Controls:
-        Enter 'p' to play/replay the sound
-        Enter ' ' to pause/unpause the sound
-        # Enter 'n' to proceed to the next bird
-        Enter 'q' to quit
-    """)
-
-birds_tested = []
-
-def create_test_bird(birds):
-    test_bird = random.choice(birds)
-    birds_tested.append(test_bird)
-    return test_bird
-
 #%% Setup
 
 # list of all birds which works adaptively (can add more birds to project)
@@ -35,36 +15,61 @@ birds = [
     and os.listdir(os.path.join("audio", folder)) # checks that the folder is not empty
 ]
 
-print(birds)
+#%% Functions
 
-#%% Random Choice of Bird
+# i reckon add n for proceed to next bird? nice pause in between rounds then
+def print_commands(birds):
+    print(f"""
+        Enter a bird name to make a guess
+        Possible answers are: {birds}
+          
+        Controls:
+        Enter 'n' to start, and proceed to new round
+        Enter 'p' to play the sound
+        Enter 'k' to pause/unpause the sound
+        Enter 'q' to quit
+    """)
 
-test_bird = create_test_bird(birds)
-print(test_bird)
+def create_test_bird(birds):
+    test_bird = random.choice(birds)
+    birds_tested.append(test_bird)
+    return test_bird
 
-#%% make dictionary of everything in folder for that bird
 
-# possibly this can be massively simplified if we never care about which wav it was??
 
-test_bird_kvps = {}
+#%% Random Choice of Bird and Audio
 
-root_path = "audio/"
-path_string = root_path + test_bird
+birds_tested = []
 
-for filename in os.listdir(path_string):
-    if filename.endswith(".wav"):
-        name = os.path.splitext(filename)[0]
-        test_bird_kvps[name] = pygame.mixer.Sound(
-            os.path.join(path_string, filename)
-        )
+# we need to functionise everything below so it is callable in loop during game
+# the function should be passed nothing and return nothing
+# simply adds new bird to list of tested, and loads bird audio file into mixer?
+# or we could have it return the audio file, and correct answer if cleaner
 
-print(test_bird_kvps)
+def get_bird_and_audio(root_path):
 
-#%% random choice of example of that bird
+    test_bird = create_test_bird(birds)
 
-test_bird_song = random.choice(list(test_bird_kvps.values()))
+    # make dictionary of everything in folder for that bird
+    # ideally actually we would preload all of these.... 
+    # instead of scanning directory from blank each round of game
+    test_bird_dict = {}
 
-print(test_bird_song)
+    path_string = root_path + test_bird
+
+    for filename in os.listdir(path_string):
+        if filename.endswith(".wav"):
+            name = os.path.splitext(filename)[0]
+            test_bird_dict[name] = pygame.mixer.Sound(
+                os.path.join(path_string, filename)
+            )
+
+    # random choice of example of that bird
+    test_bird_key, test_bird_song = random.choice(list(test_bird_dict.items()))
+
+    test_bird_song_file = root_path + test_bird + '/' + test_bird_key + '.wav'
+    
+    return test_bird, test_bird_song_file
 
 #%%
 
@@ -73,48 +78,58 @@ def main():
     #%% User Interaction
 
     print("Game starting")
-    print_commands()
+    print_commands(birds)
 
     score = 0
-    pygame.mixer.music.load('audio/wren1.wav')
-
-    bird = 'wren'
 
     while True:
+
         user_input = input(">> ").lower()
 
         # --- COMMANDS ---
 
         if user_input == 'q':
+            pygame.mixer.music.stop()
             break 
 
-        if user_input == 'p':
-            # print('Round starting')
+        elif user_input == 'admin':
+            print(birds_tested)
+            continue
+
+        elif user_input == 'n':
+            print('Next round')
+            test_bird, test_bird_song_file = get_bird_and_audio("audio/")
+            pygame.mixer.music.load(test_bird_song_file)
+            continue
+
+        elif user_input == 'p':
+            print('Bird singing')
             pygame.mixer.music.play()
             continue
 
-        elif user_input == ' ':
+        elif user_input == 'k':
             if pygame.mixer.music.get_busy():
                 pygame.mixer.music.pause()
             else:
                 pygame.mixer.music.unpause()
-        
-        elif user_input == 'k':
-            pygame.mixer.music.stop()
             continue
 
-        elif user_input == bird:
+        elif user_input == test_bird:
             score += 1
             print('yeah class mate')
             print(f'Score = {score}')
-            print("Next bird....")
+            test_bird, test_bird_song_file = get_bird_and_audio("audio/")
+            pygame.mixer.music.load(test_bird_song_file)
+            continue
 
         # this counts any typed and entered letters that are the wrong answer
         elif user_input.isalpha():
             score = 0
             print(f'does that sound like a {user_input} you plonker')
             print(f'Score = {score}')
-            print("Next bird....")
+            test_bird, test_bird_song_file = get_bird_and_audio("audio/")
+            pygame.mixer.music.load(test_bird_song_file)
+            continue
 
 
     #%%
