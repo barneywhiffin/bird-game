@@ -26,6 +26,7 @@ def print_commands(birds):
         Controls:
         Enter 'p' to play the sound
         Enter 'k' to pause/unpause the sound
+        Enter 'b' for a reminder of the available birds
         Enter 'q' to quit
     """)
 
@@ -131,10 +132,7 @@ def main():
     pygame.mixer.music.load(test_bird_song_file)
     print("Game starting")
     print_commands(birds)
-    print(f"Round {round}:")
-
-    # and add a print at game over which compares guesses to correct answers
-    # actually would be better here to just make the game politer and tell you each round, and offer an immediately replay of sound
+    print(f"Round {score+1}:")
 
     while True:
 
@@ -144,7 +142,7 @@ def main():
 
         if user_input == 'q':
             pygame.mixer.music.stop()
-            print(f'Score = {score}')
+            print(f'Final score = {score}')
             write_score(username, score, "scores.json", "highscores.json")
             # reveal_answers(birds_tested)
             break 
@@ -165,6 +163,16 @@ def main():
                 pygame.mixer.music.unpause()
             continue
 
+        elif user_input == 'b':
+            print(f"Possible answers are: {birds}")
+
+        elif user_input == "r":
+            score = 0
+            print(f"Score = {score}")
+            print(f'Round {score+1}:')
+            test_bird, test_bird_song_file = get_bird_and_audio("audio/")
+            pygame.mixer.music.load(test_bird_song_file)
+
         elif user_input == test_bird:
             pygame.mixer.music.stop()
             score += 1
@@ -178,8 +186,8 @@ def main():
         # must be kept as the final check for this reason
         elif user_input.isalpha():
             pygame.mixer.music.stop()
-            print(f'Nope, that one was a {test_bird}')
-            print("Enter 'p' to hear the sound again, or 'q' to quit")
+            print(f'Not quite, that one was a {test_bird}')
+            print("Enter 'p' to hear the sound again, 'r' to reset score and continue, or 'q' to quit")
 
             continue
 
