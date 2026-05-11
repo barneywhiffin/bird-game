@@ -9,32 +9,6 @@ pygame.mixer.init()
 import random
 
 
- #%%
-
-# need to sort username logic tooo
-new_score = {
-    "username": "barney",
-    "date": datetime.now().strftime("%Y-%m-%d"),
-    "time": datetime.now().strftime("%H:%M:%S"),
-    "score": 0
-}
-
-filename = "scores.json"
-
-# Load existing scores
-if os.path.exists(filename):
-    with open(filename, "r") as file:
-        scores = json.load(file)
-else:
-    scores = []
-
-# Add new score
-scores.append(new_score)
-
-# Save updated list
-with open(filename, "w") as file:
-    json.dump(scores, file, indent=4)
-
 
 #%% Setup
 
@@ -54,7 +28,7 @@ def print_commands(birds):
         Possible answers are: {birds}
           
         Controls:
-        Enter 'n' to start, and proceed to new round
+        Enter 'n' to proceed to new round
         Enter 'p' to play the sound
         Enter 'k' to pause/unpause the sound
         Enter 'q' to quit
@@ -65,7 +39,29 @@ def create_test_bird(birds):
     birds_tested.append(test_bird)
     return test_bird
 
+def write_score(username, score, file):
+    new_score = {
+        "username": username,
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "time": datetime.now().strftime("%H:%M:%S"),
+        "score": score
+    }
 
+    filename = file
+
+    # Load existing scores
+    if os.path.exists(filename):
+        with open(filename, "r") as file:
+            scores = json.load(file)
+    else:
+        scores = []
+
+    # Add new score
+    scores.append(new_score)
+
+    # Save updated list
+    with open(filename, "w") as file:
+        json.dump(scores, file, indent=4)
 
 #%% Random Choice of Bird and Audio
 
@@ -107,12 +103,21 @@ def main():
 
     #%% User Interaction
 
-    print("Game starting")
-    print_commands(birds)
+    print("Enter Username:")
+    username = input()
 
     score = 0
+    round = 1
+    flag = False
+
+    test_bird, test_bird_song_file = get_bird_and_audio("audio/")
+    pygame.mixer.music.load(test_bird_song_file)
+    print("Game starting")
+    print_commands(birds)
+    print(f"Round {round}:")
 
     # add a simple json or smt which can hold all time highest scores!!
+    # this needs to read scores json, if score higher than existing for that username, then write to highscores.json too
 
     # and add a print at game over which compares guesses to correct answers
     # actually would be better here to just make the game politer and tell you each round, and offer an immediately replay of sound
@@ -132,9 +137,13 @@ def main():
             continue
 
         elif user_input == 'n':
-            print('Next round')
-            test_bird, test_bird_song_file = get_bird_and_audio("audio/")
-            pygame.mixer.music.load(test_bird_song_file)
+            if flag == False:
+                print("Bird guess required before new round")
+            if flag == True:
+                flag = False
+                print('New round')
+                test_bird, test_bird_song_file = get_bird_and_audio("audio/")
+                pygame.mixer.music.load(test_bird_song_file)
             continue
 
         elif user_input == 'p':
@@ -150,21 +159,28 @@ def main():
             continue
 
         elif user_input == test_bird:
+            flag = True
+            pygame.mixer.music.stop()
             score += 1
             print('yeah class mate')
             print(f'Score = {score}')
-            test_bird, test_bird_song_file = get_bird_and_audio("audio/")
-            pygame.mixer.music.load(test_bird_song_file)
             continue
 
         # this counts any typed and entered letters that are the wrong answer
         elif user_input.isalpha():
-            score = 0
+            flag = True
             print(f'does that sound like a {user_input} you plonker')
             print(f'Score = {score}')
-            test_bird, test_bird_song_file = get_bird_and_audio("audio/")
-            pygame.mixer.music.load(test_bird_song_file)
-            continue
+            write_score(username, score, "scores.json")
+
+            # we need to show them the correct answers, then quit game. or offer replay?
+            # either way it needs to be nested if options here, so they can't keep playing
+
+            # initial messy display:
+            print(f"Answers: {birds_tested}")
+
+            score = 0
+            break
 
 
     #%%

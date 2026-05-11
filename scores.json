@@ -1,26 +1,14 @@
 [
     {
-        "username": "harry",
-        "date": "2026-05-10",
-        "time": "10:29:14",
-        "score": 2
+        "username": "barney",
+        "date": "2026-05-11",
+        "time": "07:04:04",
+        "score": 4
     },
     {
         "username": "barney",
-        "date": "2026-05-10",
-        "time": "10:29:30",
-        "score": 1
-    },
-    {
-        "username": "barney",
-        "date": "2026-05-10",
-        "time": "10:29:38",
-        "score": 0
-    },
-    {
-        "username": "barney",
-        "date": "2026-05-10",
-        "time": "10:30:46",
+        "date": "2026-05-11",
+        "time": "07:11:46",
         "score": 0
     }
 ]
