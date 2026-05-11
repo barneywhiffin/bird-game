@@ -63,6 +63,11 @@ def write_score(username, score, file):
     with open(filename, "w") as file:
         json.dump(scores, file, indent=4)
 
+def reveal_answers(birds_tested):
+    print(":: Correct Answers ::")
+    for index, bird in enumerate(birds_tested):
+        print(f"Round {index}: {bird}")
+
 #%% Random Choice of Bird and Audio
 
 birds_tested = []
@@ -136,12 +141,14 @@ def main():
             print(birds_tested)
             continue
 
+        # we should probably remove this entirely, and have round 1, and all following rounds automated (reduces room for problems too)
+        # although perhaps tidying this can wait until we switch to react?
         elif user_input == 'n':
             if flag == False:
                 print("Bird guess required before new round")
             if flag == True:
                 flag = False
-                print('New round')
+                print(f'Round {score+1}:')
                 test_bird, test_bird_song_file = get_bird_and_audio("audio/")
                 pygame.mixer.music.load(test_bird_song_file)
             continue
@@ -167,6 +174,7 @@ def main():
             continue
 
         # this counts any typed and entered letters that are the wrong answer
+        # must be kept as the final check for this reason
         elif user_input.isalpha():
             flag = True
             print(f'does that sound like a {user_input} you plonker')
@@ -176,11 +184,12 @@ def main():
             # we need to show them the correct answers, then quit game. or offer replay?
             # either way it needs to be nested if options here, so they can't keep playing
 
-            # initial messy display:
-            print(f"Answers: {birds_tested}")
-
             score = 0
+
+            reveal_answers(birds_tested)
+
             break
+
 
 
     #%%
