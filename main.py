@@ -3,12 +3,9 @@
 import os
 import json
 from datetime import datetime
-# from pathlib import Path
 import pygame
 pygame.mixer.init()
 import random
-
-
 
 #%% Setup
 
@@ -21,7 +18,6 @@ birds = [
 
 #%% Functions
 
-# i reckon add n for proceed to next bird? nice pause in between rounds then
 def print_commands(birds):
     print(f"""
         Enter a bird name to make a guess
@@ -71,11 +67,6 @@ def reveal_answers(birds_tested):
 #%% Random Choice of Bird and Audio
 
 birds_tested = []
-
-# we need to functionise everything below so it is callable in loop during game
-# the function should be passed nothing and return nothing
-# simply adds new bird to list of tested, and loads bird audio file into mixer?
-# or we could have it return the audio file, and correct answer if cleaner
 
 def get_bird_and_audio(root_path):
 
