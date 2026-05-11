@@ -24,7 +24,6 @@ def print_commands(birds):
         Possible answers are: {birds}
           
         Controls:
-        Enter 'n' to proceed to new round
         Enter 'p' to play the sound
         Enter 'k' to pause/unpause the sound
         Enter 'q' to quit
@@ -127,17 +126,12 @@ def main():
     username = input()
 
     score = 0
-    round = 1
-    flag = False
 
     test_bird, test_bird_song_file = get_bird_and_audio("audio/")
     pygame.mixer.music.load(test_bird_song_file)
     print("Game starting")
     print_commands(birds)
     print(f"Round {round}:")
-
-    # add a simple json or smt which can hold all time highest scores!!
-    # this needs to read scores json, if score higher than existing for that username, then write to highscores.json too
 
     # and add a print at game over which compares guesses to correct answers
     # actually would be better here to just make the game politer and tell you each round, and offer an immediately replay of sound
@@ -150,22 +144,13 @@ def main():
 
         if user_input == 'q':
             pygame.mixer.music.stop()
+            print(f'Score = {score}')
+            write_score(username, score, "scores.json", "highscores.json")
+            # reveal_answers(birds_tested)
             break 
 
         elif user_input == 'admin':
             print(birds_tested)
-            continue
-
-        # we should probably remove this entirely, and have round 1, and all following rounds automated (reduces room for problems too)
-        # although perhaps tidying this can wait until we switch to react?
-        elif user_input == 'n':
-            if flag == False:
-                print("Bird guess required before new round")
-            if flag == True:
-                flag = False
-                print(f'Round {score+1}:')
-                test_bird, test_bird_song_file = get_bird_and_audio("audio/")
-                pygame.mixer.music.load(test_bird_song_file)
             continue
 
         elif user_input == 'p':
@@ -181,34 +166,25 @@ def main():
             continue
 
         elif user_input == test_bird:
-            flag = True
             pygame.mixer.music.stop()
             score += 1
-            print('yeah class mate')
-            print(f'Score = {score}')
+            print('Correct!')
+            print(f'Round {score+1}:')
+            test_bird, test_bird_song_file = get_bird_and_audio("audio/")
+            pygame.mixer.music.load(test_bird_song_file)
             continue
 
-        # this counts any typed and entered letters that are the wrong answer
+        # this counts any typed letters that are not captured by above ifs
         # must be kept as the final check for this reason
         elif user_input.isalpha():
-            flag = True
-            print(f'does that sound like a {user_input} you plonker')
-            print(f'Score = {score}')
-            write_score(username, score, "scores.json", "highscores.json")
+            pygame.mixer.music.stop()
+            print(f'Nope, that one was a {test_bird}')
+            print("Enter 'p' to hear the sound again, or 'q' to quit")
 
-            # we need to show them the correct answers, then quit game. or offer replay?
-            # either way it needs to be nested if options here, so they can't keep playing
-
-            score = 0
-
-            reveal_answers(birds_tested)
-
-            break
-
+            continue
 
 
     #%%
-
 
 if __name__ == "__main__":
     main()
