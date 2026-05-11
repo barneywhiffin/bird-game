@@ -35,7 +35,7 @@ def create_test_bird(birds):
     birds_tested.append(test_bird)
     return test_bird
 
-def write_score(username, score, file):
+def write_score(username, score, scores_file, high_scores_file):
     new_score = {
         "username": username,
         "date": datetime.now().strftime("%Y-%m-%d"),
@@ -43,7 +43,7 @@ def write_score(username, score, file):
         "score": score
     }
 
-    filename = file
+    filename = scores_file
 
     # Load existing scores
     if os.path.exists(filename):
@@ -59,10 +59,34 @@ def write_score(username, score, file):
     with open(filename, "w") as file:
         json.dump(scores, file, indent=4)
 
+    write_high_score(scores_file, high_scores_file)
+
+def write_high_score(scores_file, high_scores_file):
+    with open(scores_file, "r") as file:
+        data = json.load(file)
+
+    grouped = {}
+
+    for entry in data:
+        grouped.setdefault(
+            entry["username"],
+            []
+        ).append(entry["score"])
+
+    highscores = []
+
+    for username, scores in grouped.items():
+        best_score = max(scores)
+        highscores.append([username, best_score])
+
+    with open(high_scores_file, "w") as file:
+        json.dump(highscores, file, indent=4)
+
 def reveal_answers(birds_tested):
     print(":: Correct Answers ::")
     for index, bird in enumerate(birds_tested):
         print(f"Round {index}: {bird}")
+
 
 #%% Random Choice of Bird and Audio
 
@@ -170,7 +194,7 @@ def main():
             flag = True
             print(f'does that sound like a {user_input} you plonker')
             print(f'Score = {score}')
-            write_score(username, score, "scores.json")
+            write_score(username, score, "scores.json", "highscores.json")
 
             # we need to show them the correct answers, then quit game. or offer replay?
             # either way it needs to be nested if options here, so they can't keep playing
