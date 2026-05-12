@@ -9,11 +9,13 @@ import random
 
 #%% Setup
 
+audio_path = "assets/audio"
+
 # list of all birds which works adaptively (can add more birds to project)
 birds = [
-    folder for folder in os.listdir("audio")
-    if os.path.isdir(os.path.join("audio", folder))
-    and os.listdir(os.path.join("audio", folder)) # checks that the folder is not empty
+    folder for folder in os.listdir(audio_path)
+    if os.path.isdir(os.path.join(audio_path, folder))
+    and os.listdir(os.path.join(audio_path, folder)) # checks that the folder is not empty
 ]
 
 #%% Functions
@@ -101,7 +103,7 @@ def get_bird_and_audio(root_path):
     # instead of scanning directory from blank each round of game
     test_bird_dict = {}
 
-    path_string = root_path + test_bird
+    path_string = root_path + '/' + test_bird
 
     for filename in os.listdir(path_string):
         if filename.endswith(".wav"):
@@ -113,7 +115,7 @@ def get_bird_and_audio(root_path):
     # random choice of example of that bird
     test_bird_key, test_bird_song = random.choice(list(test_bird_dict.items()))
 
-    test_bird_song_file = root_path + test_bird + '/' + test_bird_key + '.wav'
+    test_bird_song_file = root_path + '/' + test_bird + '/' + test_bird_key + '.wav'
     
     return test_bird, test_bird_song_file
 
@@ -128,7 +130,7 @@ def main():
 
     score = 0
 
-    test_bird, test_bird_song_file = get_bird_and_audio("audio/")
+    test_bird, test_bird_song_file = get_bird_and_audio(audio_path)
     pygame.mixer.music.load(test_bird_song_file)
     print("Game starting")
     print_commands(birds)
@@ -170,7 +172,7 @@ def main():
             score = 0
             print(f"Score = {score}")
             print(f'Round {score+1}:')
-            test_bird, test_bird_song_file = get_bird_and_audio("audio/")
+            test_bird, test_bird_song_file = get_bird_and_audio(audio_path)
             pygame.mixer.music.load(test_bird_song_file)
 
         elif user_input == test_bird:
@@ -178,7 +180,7 @@ def main():
             score += 1
             print('Correct!')
             print(f'Round {score+1}:')
-            test_bird, test_bird_song_file = get_bird_and_audio("audio/")
+            test_bird, test_bird_song_file = get_bird_and_audio(audio_path)
             pygame.mixer.music.load(test_bird_song_file)
             continue
 
