@@ -145,7 +145,7 @@ def main():
         if user_input == 'q':
             pygame.mixer.music.stop()
             print(f'Final score = {score}')
-            write_score(username, score, "scores.json", "highscores.json")
+            write_score(username, score, "data/scores.json", "data/highscores.json")
             # reveal_answers(birds_tested)
             break 
 
