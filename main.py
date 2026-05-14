@@ -7,6 +7,15 @@ import pygame
 pygame.mixer.init()
 import random
 
+# should eventually have easy medium and hard difficulties (reflecting number of birds + how easy to distinguish them)
+# and a custom mode where specifically the birds tested are to be included (needs a catch case for need to select at least 2 more, and at least 1 more)
+
+# for now should just be a user input option at the start saying, are there any birds you would like to exclude ?
+
+# should also be choice to include calls (or just have songs)
+# would this need additional calls folder in each bird folder, and then associated ifs and path 'calls/' whatever?
+# this should be simple tick, birds to exclude should be dropdown with ticks? (eventually)
+
 #%% Setup
 
 audio_path = "assets/audio"
@@ -26,9 +35,9 @@ def print_commands(birds):
         Possible answers are: {birds}
           
         Controls:
-        Enter 'p' to play the sound
+        Enter 'p' to play or replay the sound
         Enter 'k' to pause/unpause the sound
-        Enter 'b' for a reminder of the available birds
+        Enter 'birds' for a reminder of the available birds
         Enter 'q' to quit
     """)
 
