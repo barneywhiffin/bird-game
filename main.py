@@ -16,6 +16,10 @@ import random
 # would this need additional calls folder in each bird folder, and then associated ifs and path 'calls/' whatever?
 # this should be simple tick, birds to exclude should be dropdown with ticks? (eventually)
 
+# we can now take away the option to play/pause, as the audio is all v short
+
+# space in input when this is the wrong answer breaks the game !! just skips to next input
+
 #%% Setup
 
 audio_path = "assets/audio"
@@ -36,8 +40,8 @@ def print_commands(birds):
           
         Controls:
         Enter 'p' to play or replay the sound
-        Enter 'k' to pause/unpause the sound
         Enter 'birds' for a reminder of the available birds
+        Enter 'fuck corvids' to remove crows, magpies, and jackdaws from the game
         Enter 'q' to quit
     """)
 
@@ -167,15 +171,21 @@ def main():
             pygame.mixer.music.play()
             continue
 
-        elif user_input == 'k':
-            if pygame.mixer.music.get_busy():
-                pygame.mixer.music.pause()
-            else:
-                pygame.mixer.music.unpause()
-            continue
-
-        elif user_input == 'b':
+        elif user_input == 'birds':
             print(f"Possible answers are: {birds}")
+
+        elif user_input == 'fuck corvids':
+            if score > 0:
+                print("This setting may only be changed at round 1")
+            else:
+                if 'crow' in birds:
+                    birds.remove('crow')
+                if 'magpie' in birds:
+                    birds.remove('magpie')
+                if 'jackdaw' in birds:
+                    birds.remove('jackdaw')
+                print('Corvids removed!')
+            continue
 
         elif user_input == "r":
             score = 0
