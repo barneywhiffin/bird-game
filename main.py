@@ -232,10 +232,8 @@ def main():
             pygame.mixer.music.load(test_bird_song_file)
             print(f'Round {score+1}:')
 
-        # this counts any typed letters that are not captured by above ifs
-        # must be kept as the final check for this reason
-        # is there a reason this isn't just an 'else'?
-        elif user_input.isalpha():
+        # switched this to 'else' to fix problem where a space present would not count as isalpha() True
+        else:
             pygame.mixer.music.stop()
             print(f'Not quite, that one was a {test_bird}')
             print(f"""
