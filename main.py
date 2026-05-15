@@ -195,6 +195,9 @@ def main():
         elif user_input == 'p':
             print('Bird singing 🎶 🦜')
             pygame.mixer.music.play()
+        
+        elif user_input == 'admin':
+            print(birds_tested)
 
         elif user_input == 'help':
             print_commands(corvids)
@@ -202,7 +205,8 @@ def main():
         elif user_input == 'birds':
             print(f"Possible answers are: {birds}")
 
-        elif user_input == "r":
+        # need to make this only pressable sometimes... or have confim input
+        elif user_input == "reset":
             score = 0
             print(f"Score = {score}")
             test_bird, test_bird_song_file = get_bird_and_audio(audio_path)
@@ -223,8 +227,12 @@ def main():
         elif user_input.isalpha():
             pygame.mixer.music.stop()
             print(f'Not quite, that one was a {test_bird}')
-            # add 'more' option to hear another example from test bird folder
-            print("Enter 'p' to hear the sound again, 'r' to reset score and continue, or 'q' to quit")
+            print(f"""
+                  Enter 'p' to hear the sound again
+                #   Enter 'more' to hear further examples of a {test_bird}
+                  Enter 'reset' to play again
+                  Enter 'q' to quit
+                  """)
 
 
     #%%
