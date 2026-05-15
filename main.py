@@ -21,6 +21,16 @@ import random
 
 # space in input when this is the wrong answer breaks the game !! just skips to next input
 
+# would be nice to have replay sound or next bird.... but in terminal this would be long
+
+# maybe just... only have songbirds?
+
+# change the jsons to be templates, with your private ones in .gitignore
+# then if can't find data/scores.json, it makes a copy of scores template called this
+# allowing people to have their own
+
+# add some kind of audio normalisation too
+
 #%% Setup
 
 audio_path = "assets/audio"
@@ -181,7 +191,7 @@ def main():
 
     while True:
 
-        user_input = input(">> ").lower()
+        user_input = input(">> ").lower().strip()
 
         # --- COMMANDS ---
 
@@ -206,8 +216,9 @@ def main():
             print(f"Possible answers are: {birds}")
 
         # need to make this only pressable sometimes... or have confim input
-        elif user_input == "reset":
+        elif user_input == "r":
             score = 0
+            birds_tested.clear()
             print(f"Score = {score}")
             test_bird, test_bird_song_file = get_bird_and_audio(audio_path)
             pygame.mixer.music.load(test_bird_song_file)
@@ -229,10 +240,10 @@ def main():
             print(f'Not quite, that one was a {test_bird}')
             print(f"""
                   Enter 'p' to hear the sound again
-                #   Enter 'more' to hear further examples of a {test_bird}
-                  Enter 'reset' to play again
+                  Enter 'r' to play again
                   Enter 'q' to quit
                   """)
+                            #   Enter 'more' to hear further examples of a {test_bird}
 
 
     #%%
