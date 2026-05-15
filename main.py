@@ -3,6 +3,7 @@
 import os
 import json
 from datetime import datetime
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 import pygame
 pygame.mixer.init()
 import random
@@ -31,17 +32,26 @@ birds = [
     and os.listdir(os.path.join(audio_path, folder)) # checks that the folder is not empty
 ]
 
+corvids = []
+for i in birds:
+    if i == 'crow':
+        corvids.append('crow')
+    if i == 'magpie':
+        corvids.append('magpie')
+    if i == 'jackdaw':
+        corvids.append('jackdaw')
+    if i == 'rook':
+        corvids.append('rook')
+    
+
 #%% Functions
 
-def print_commands(birds):
+def print_commands(corvids):
     print(f"""
-        Enter a bird name to make a guess
-        Possible answers are: {birds}
-          
-        Controls:
         Enter 'p' to play or replay the sound
-        Enter 'birds' for a reminder of the available birds
-        Enter 'fuck corvids' to remove crows, magpies, and jackdaws from the game
+        Enter a bird name to make a guess
+        Enter 'birds' to see the available birds
+        Enter 'help' to view this menu again
         Enter 'q' to quit
     """)
 
@@ -138,15 +148,35 @@ def main():
 
     #%% User Interaction
 
+    print("""
+          
+            ::::::::: BIRD GAME :::::::::
+        
+    """)
+    print_commands(corvids)
+
     print("Enter Username:")
     username = input()
+
+    print("Fuck corvids: y/n?")
+    while True:
+        fcorvids = input().lower()
+        if fcorvids == 'y':
+            for i in corvids:
+                birds.remove(i)
+            print('Corvids removed!')
+            break
+        elif fcorvids == 'n':
+            break
+        else:
+            print("that was not a 'y' or 'n'")
+
 
     score = 0
 
     test_bird, test_bird_song_file = get_bird_and_audio(audio_path)
     pygame.mixer.music.load(test_bird_song_file)
-    print("Game starting")
-    print_commands(birds)
+    
     print(f"Round {score+1}:")
 
     while True:
@@ -162,55 +192,39 @@ def main():
             # reveal_answers(birds_tested)
             break 
 
-        elif user_input == 'admin':
-            print(birds_tested)
-            continue
-
         elif user_input == 'p':
-            print('Bird singing')
+            print('Bird singing 🎶 🦜')
             pygame.mixer.music.play()
-            continue
+
+        elif user_input == 'help':
+            print_commands(corvids)
 
         elif user_input == 'birds':
             print(f"Possible answers are: {birds}")
 
-        elif user_input == 'fuck corvids':
-            if score > 0:
-                print("This setting may only be changed at round 1")
-            else:
-                if 'crow' in birds:
-                    birds.remove('crow')
-                if 'magpie' in birds:
-                    birds.remove('magpie')
-                if 'jackdaw' in birds:
-                    birds.remove('jackdaw')
-                print('Corvids removed!')
-            continue
-
         elif user_input == "r":
             score = 0
             print(f"Score = {score}")
-            print(f'Round {score+1}:')
             test_bird, test_bird_song_file = get_bird_and_audio(audio_path)
             pygame.mixer.music.load(test_bird_song_file)
+            print(f'Round {score+1}:')
 
         elif user_input == test_bird:
             pygame.mixer.music.stop()
             score += 1
             print('Correct!')
-            print(f'Round {score+1}:')
             test_bird, test_bird_song_file = get_bird_and_audio(audio_path)
             pygame.mixer.music.load(test_bird_song_file)
-            continue
+            print(f'Round {score+1}:')
 
         # this counts any typed letters that are not captured by above ifs
         # must be kept as the final check for this reason
+        # is there a reason this isn't just an 'else'?
         elif user_input.isalpha():
             pygame.mixer.music.stop()
             print(f'Not quite, that one was a {test_bird}')
+            # add 'more' option to hear another example from test bird folder
             print("Enter 'p' to hear the sound again, 'r' to reset score and continue, or 'q' to quit")
-
-            continue
 
 
     #%%
