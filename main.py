@@ -197,8 +197,8 @@ def main():
 
         if user_input == 'q':
             pygame.mixer.music.stop()
-            print(f'Final score = {score}')
-            write_score(username, score, "data/scores.json", "data/highscores.json")
+            # need to replace this with best score whole session!!!
+            # print(f'Final score = {score}')
             # reveal_answers(birds_tested)
             break 
 
@@ -236,6 +236,7 @@ def main():
         else:
             pygame.mixer.music.stop()
             print(f'Not quite, that one was a {test_bird}')
+            write_score(username, score, "data/scores.json", "data/highscores.json")
             print(f"""
                   Enter 'p' to hear the sound again
                   Enter 'r' to play again
